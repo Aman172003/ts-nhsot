@@ -27,13 +27,9 @@ export const createUser = async (req: Request, res: Response) => {
   const query = `
     mutation insertUser($object: users_insert_input!) {
       insertUser(object: $object) {
-        createdAt
+        id
         displayName
         email
-        emailVerified
-        id
-        locale
-        passwordHash
       }
     }
   `;
@@ -49,7 +45,10 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(400).json({ errors: response.data.errors });
     }
 
-    res.status(200).json(response.data.data.insertUser);
+    res.status(200).json({
+      message: "Successfully created a user",
+      user: response.data.data.insertUser,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -71,7 +70,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
   `;
   try {
     const response = await axios.post(url, { query }, { headers });
-    res.status(200).json(response.data);
+    res.status(200).json(response.data.data.users);
   } catch (error) {
     console.error("Error performing GraphQL query:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -95,7 +94,10 @@ export const deleteUser = async (req: Request, res: Response) => {
       throw new Error(response.data.errors[0].message);
     }
 
-    res.status(200).json(response.data.data.deleteUser);
+    res.status(200).json({
+      message: "Successfully deleted a user",
+      id: response.data.data.deleteUser.id,
+    });
   } catch (error) {
     console.error("Error performing GraphQL mutation:", error);
     res.status(400).json({

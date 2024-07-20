@@ -20,7 +20,6 @@ export const getTodos = async (req: Request, res: Response) => {
       todos {
         id
         name
-        created_at
         is_completed
         user_id
       }
@@ -28,7 +27,7 @@ export const getTodos = async (req: Request, res: Response) => {
   `;
   try {
     const response = await axios.post(url, { query }, { headers });
-    res.status(200).json(response.data);
+    res.status(200).json(response.data.data.todos);
   } catch (error) {
     console.error("Error performing GraphQL query:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -41,9 +40,6 @@ export const insertTodo = async (req: Request, res: Response) => {
   const mutation = `
     mutation {
       insert_todos_one(object: { name: "${name}", is_completed: ${isCompleted}, user_id: "${userId}" }) {
-        is_completed
-        name
-        user_id
         id
       }
     }
@@ -53,7 +49,10 @@ export const insertTodo = async (req: Request, res: Response) => {
     if (response.data.errors) {
       throw new Error(response.data.errors[0].message);
     }
-    res.status(201).json(response.data.data.insert_todos_one);
+    res.status(201).json({
+      message: "Successfully inserted",
+      id: response.data.data.insert_todos_one.id,
+    });
   } catch (error: unknown) {
     res.status(400).json({ error: (error as Error).message });
   }
@@ -66,9 +65,6 @@ export const updateTodo = async (req: Request, res: Response) => {
     mutation {
       update_todos_by_pk(pk_columns: {id: "${id}"}, _set: { name: "${name}", is_completed: ${isCompleted} }) {
         id
-        created_at
-        name
-        is_completed
       }
     }
   `;
@@ -77,7 +73,10 @@ export const updateTodo = async (req: Request, res: Response) => {
     if (response.data.errors) {
       throw new Error(response.data.errors[0].message);
     }
-    res.json(response.data.data.update_todos_by_pk);
+    res.json({
+      message: "Successfully inserted",
+      id: response.data.data.update_todos_by_pk.id,
+    });
   } catch (error: unknown) {
     res.status(400).json({ error: (error as Error).message });
   }
@@ -97,7 +96,10 @@ export const deleteTodo = async (req: Request, res: Response) => {
     if (response.data.errors) {
       throw new Error(response.data.errors[0].message);
     }
-    res.json(response.data.data.delete_todos_by_pk);
+    res.json({
+      message: "Successfully deleted",
+      id: response.data.data.delete_todos_by_pk.id,
+    });
   } catch (error: unknown) {
     res.status(400).json({ error: (error as Error).message });
   }

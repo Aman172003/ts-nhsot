@@ -9,10 +9,10 @@ Create a .env file which should contain HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT
 
 ### Below are the steps to get HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT
 
--> Go to https://nhost.io/
--> Sign Up/Sign In and create new project
--> Go to Hasura Console and open Hasura
--> Get the x-hasura-admin-secret and GraphQL Endpoint and name them as HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT respectively in .env
+1. -> Go to https://nhost.io/
+2. -> Sign Up/Sign In and create new project
+3. -> Go to Hasura Console and open Hasura
+4. -> Get the x-hasura-admin-secret and GraphQL Endpoint and name them as HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT respectively in .env
 
 ```bash
 git clone https://github.com/keploy/samples-typescript && cd samples-typescript/ts-nhost
@@ -89,18 +89,7 @@ There are 2 ways you can run this sample application.
 
 Make API Calls using Hoppscotch, Postman or cURL command. Keploy will capture those calls to generate test suites containing test cases and data mocks.
 
-1. **Create User**
-
-   ```bash
-   curl --location 'http://localhost:3000/users' \
-   --header 'Content-Type: application/json'
-   ```
-
-   You will get the following output:
-
-   ```json
-   { "message": "User was registered successfully!" }
-   ```
+1. Refer to ts-nhost/api.txt to make api calls.
 
 2. **Observe terminal output:**
    Let's go ahead and create a few more test cases for different endpoints!
@@ -141,97 +130,7 @@ keploy record -c "sudo docker-compose up" --containerName "ts-nhost"
 
 Make API Calls using [Hoppscotch](https://hoppscotch.io), [Postman](https://postman.com) or curl command. Keploy with capture those calls to generate the test-suites containing testcases and data mocks.
 
-1. Create User
-
-```bash
-curl --location 'http://localhost:8080/api/auth/signup' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "username":"user",
-    "email":"user@keploy.io",
-    "password":"1234"
-}'
-```
-
-we will get the output:
-
-```json
-{ "message": "User was registered successfully!" }
-```
-
-We will get the following output in our terminal
-
-![Testcase](./img/record.png)
-
-Let's go ahead create few more testcases for different endpoints!
-
-2. Create Admin User
-
-```bash
-curl --location 'http://localhost:8080/api/auth/signup' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "username":"admin",
-    "email":"admin@keploy.io",
-    "password":"1234",
-    "role":["admin"]
-}'
-```
-
-we will get the output:
-
-```json
-{ "message": "User was registered successfully!" }
-```
-
-3. User Signin
-
-```bash
-curl --location 'http://localhost:8080/api/auth/signin' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "username":"user",
-    "email":"user@keploy.io",
-    "password":"1234"
-}'
-```
-
-We will get access token once the user has signed in:
-
-```json
-{
-  "id": 1,
-  "username": "user",
-  "email": "user@keploy.io",
-  "roles": ["ROLE_USER"],
-  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzNzY0ODY1LCJleHAiOjE3MTM3NjUwNDV9.5LSU1A1jxIbIQFS6Tq26ENNWZBinFt2cJQZ7swpipbc"
-}
-```
-
-4. Access user Content
-
-```sh
-curl --location 'http://localhost:8080/api/test/all'
-```
-
-We will get:
-
-```
-Public Content
-```
-
-5. Access user Content
-
-```sh
-curl --location 'http://localhost:8080/api/test/user' \
---header 'x-access-token: <TOKEN>'
-```
-
-We will get
-
-```
-User Content
-```
+1. Refer to ts-nhost/api.txt to make api calls
 
 ## Running the testcases
 
