@@ -1,3 +1,6 @@
+Copy paste the curl commands each at a time and run it on terminal/cmd
+
+--------------------------------------------------------------------------------------------------------
 
 -Get all users
 
