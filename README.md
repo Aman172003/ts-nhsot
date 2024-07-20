@@ -1,10 +1,18 @@
 # ts-nHost
 
-A simple sample CRUD application to test using Keploy build with Typescript, nHost and Node.
+A sample App using Typescript and using nhost.io as Backend as a service
 
 ## Setup application
-Clone the repository and move to express-mongo folder
-Create a .env file 
+
+Clone the repository and move to ts-nhost folder
+Create a .env file which should contain HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT
+
+### Below are the steps to get HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT
+
+-> Go to https://nhost.io/
+-> Sign Up/Sign In and create new project
+-> Go to Hasura Console and open Hasura
+-> Get the x-hasura-admin-secret and GraphQL Endpoint and name them as HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT respectively in .env
 
 ```bash
 git clone https://github.com/keploy/samples-typescript && cd samples-typescript/ts-nhost
@@ -12,11 +20,15 @@ git clone https://github.com/keploy/samples-typescript && cd samples-typescript/
 # Install the dependencies
 npm install
 ```
+
 # Installing Keploy
+
 Let's get started by setting up the Keploy alias with this command:
+
 ```sh
 curl -O https://raw.githubusercontent.com/keploy/keploy/main/keploy.sh && source keploy.sh
 ```
+
 ## Using Keploy :
 
 There are 2 ways you can run this sample application.
@@ -26,145 +38,108 @@ There are 2 ways you can run this sample application.
 
 # Natively on Ubuntu/WSL
 
+## Let's install certificates
 
-## Let's start the Postgres Instance
-```zsh
-docker-compose up -d
-```
+1. **Install required packages:**
 
-## Capture the testcases
+   ```sh
+   sudo apt-get install -y --no-install-recommends ca-certificates curl
+   ```
 
-```bash
-sudo -E env PATH=$PATH keploy record -c 'node app.js'
-```
+   This command installs necessary packages without additional recommended packages.
 
-### Let's Generate the testcases.
-Make API Calls using [Hoppscotch](https://hoppscotch.io), [Postman](https://postman.com) or cURL command. Keploy with capture those calls to generate the test-suites containing testcases and data mocks.
+2. **Download CA certificate:**
 
-1. Create User
+   ```sh
+   curl -o ca.crt https://raw.githubusercontent.com/keploy/keploy/main/pkg/core/proxy/asset/ca.crt
+   ```
 
-```bash
-curl --location 'http://localhost:8080/api/auth/signup' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "username":"user",
-    "email":"user@keploy.io",
-    "password":"1234"
-}'
+   This command downloads the CA certificate to `ca.crt`.
 
-```
+3. **Download setup script:**
 
-we will get the output:
+   ```sh
+   curl -o setup_ca.sh https://raw.githubusercontent.com/keploy/keploy/main/pkg/core/proxy/asset/setup_ca.sh
+   ```
 
-```json
-{"message":"User was registered successfully!"}
-```
+   This command downloads the setup script to `setup_ca.sh`.
 
-We will get the following output in our terminal
+4. **Make the setup script executable:**
 
-![Testcase](./img/record.png)
+   ```sh
+   chmod +x setup_ca.sh
+   ```
 
-Let's go ahead create few more testcases for different endpoints!
+   This command changes the permissions of `setup_ca.sh` to make it executable.
 
-2. Create Admin User
+5. **Run the setup script:**
+   ```sh
+   source ./setup_ca.sh
+   ```
+   This command executes the setup script in the current shell.
 
-```bash
-curl --location 'http://localhost:8080/api/auth/signup' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "username":"admin",
-    "email":"admin@keploy.io",
-    "password":"1234",
-    "role":["admin"]
-}'
-```
+## Capture the test cases
 
-we will get the output:
+1. **Start recording tests:**
+   ```bash
+   sudo -E env "PATH=$PATH" keploybin record -c 'ts-node src/app.ts'
+   ```
 
-```json
-{"message":"User was registered successfully!"}
-```
+## Let's Generate the test cases
 
-3. User Signin
-```bash
-curl --location 'http://localhost:8080/api/auth/signin' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "username":"user",
-    "email":"user@keploy.io",
-    "password":"1234"
-}'
-```
+Make API Calls using Hoppscotch, Postman or cURL command. Keploy will capture those calls to generate test suites containing test cases and data mocks.
 
-We will get access token once the user has signed in:
-```json
-{
-    "id":1,
-    "username":"user",
-    "email":"user@keploy.io",
-    "roles":["ROLE_USER"],
-    "accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzNzY0ODY1LCJleHAiOjE3MTM3NjUwNDV9.5LSU1A1jxIbIQFS6Tq26ENNWZBinFt2cJQZ7swpipbc"}
-```
+1. **Create User**
 
-4. Access user Content
-```sh
-curl --location 'http://localhost:8080/api/test/all'
-```
+   ```bash
+   curl --location 'http://localhost:3000/users' \
+   --header 'Content-Type: application/json'
+   ```
 
-We will get:
-```
-Public Content
-```
+   You will get the following output:
 
-5. Access user Content
-```sh
-curl --location 'http://localhost:8080/api/test/user' \
---header 'x-access-token: <TOKEN>'
-```
+   ```json
+   { "message": "User was registered successfully!" }
+   ```
 
-We will get
-```
-User Content
-```
-## Running the testcases
+2. **Observe terminal output:**
+   Let's go ahead and create a few more test cases for different endpoints!
 
-```bash
-sudo -E env PATH=$PATH keploy test -c 'npm run app.js' --delay 10
-```
+## Running the test cases
 
-Our testcases will fail as the Token will generated again when we are using testmode.
+1. **Start the application:**
 
-![Testcase](./img/test-fail.png)
+   ```bash
+   ts-node src/app.ts
+   ```
 
-Let's add the `Etag` and `accessToken` as the noise in the `test-3.yml` on line 45 under `header.Date`. The file would look like:-
-```
-        noise:
-        |   - header.Date
-        |   - header.Etag
-        |   - body.accessToken
-```
+2. **Run the recorded tests:**
 
-Now, let's run the keploy in test mode again:-
+   ```bash
+   sudo -E env "PATH=$PATH" keploybin test -c 'ts-node src/app.ts' --delay 10
+   ```
 
-![Testrun](./img/test-pass.png)
-
-*Voila!! Our testcases has passed 🌟*
+3. **Observe test run results:**
+   _Voila!! Our test cases have passed 🌟_
 
 ---
 
-# Running sample app using docker
+# Running the app using docker
 
-Since we have setup our sample-app using docker, we need to update the postgres host on line 2, in `config/db.config.js`, from `localhost` to `postgres`.
+Since we have to setup our app using docker
 
 ## Capture the testcases
- 
+
 We will run the keploy in record mode with docker-compose to start our application:-
+
 ```bash
-keploy record -c "docker-compose up" --containerName "jwtSqlApp"
+keploy record -c "sudo docker-compose up" --containerName "ts-nhost"
+
 ```
 
 #### Let's generate the testcases.
-Make API Calls using [Hoppscotch](https://hoppscotch.io), [Postman](https://postman.com) or cURL command. Keploy with capture those calls to generate the test-suites containing testcases and data mocks.
+
+Make API Calls using [Hoppscotch](https://hoppscotch.io), [Postman](https://postman.com) or curl command. Keploy with capture those calls to generate the test-suites containing testcases and data mocks.
 
 1. Create User
 
@@ -181,7 +156,7 @@ curl --location 'http://localhost:8080/api/auth/signup' \
 we will get the output:
 
 ```json
-{"message":"User was registered successfully!"}
+{ "message": "User was registered successfully!" }
 ```
 
 We will get the following output in our terminal
@@ -206,10 +181,11 @@ curl --location 'http://localhost:8080/api/auth/signup' \
 we will get the output:
 
 ```json
-{"message":"User was registered successfully!"}
+{ "message": "User was registered successfully!" }
 ```
 
 3. User Signin
+
 ```bash
 curl --location 'http://localhost:8080/api/auth/signin' \
 --header 'Content-Type: application/json' \
@@ -221,55 +197,46 @@ curl --location 'http://localhost:8080/api/auth/signin' \
 ```
 
 We will get access token once the user has signed in:
+
 ```json
 {
-    "id":1,
-    "username":"user",
-    "email":"user@keploy.io",
-    "roles":["ROLE_USER"],
-    "accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzNzY0ODY1LCJleHAiOjE3MTM3NjUwNDV9.5LSU1A1jxIbIQFS6Tq26ENNWZBinFt2cJQZ7swpipbc"}
+  "id": 1,
+  "username": "user",
+  "email": "user@keploy.io",
+  "roles": ["ROLE_USER"],
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzNzY0ODY1LCJleHAiOjE3MTM3NjUwNDV9.5LSU1A1jxIbIQFS6Tq26ENNWZBinFt2cJQZ7swpipbc"
+}
 ```
 
 4. Access user Content
+
 ```sh
 curl --location 'http://localhost:8080/api/test/all'
 ```
 
 We will get:
+
 ```
 Public Content
 ```
 
 5. Access user Content
+
 ```sh
 curl --location 'http://localhost:8080/api/test/user' \
 --header 'x-access-token: <TOKEN>'
 ```
 
 We will get
+
 ```
 User Content
 ```
+
 ## Running the testcases
 
 ```bash
-keploy test -c 'sudo docker-compose up'  --containerName "jwtSqlApp" --delay 10
+keploy test -c 'sudo docker-compose up'  --containerName "ts-nhost" --delay 10
 ```
 
-Our testcases will fail as the Token will generated again when we are using testmode.
-
-![Testcase](./img/test-fail.png)
-
-Let's add the `Etag` and `accessToken` as the noise in the `test-3.yml` on line 45 under `header.Date`. The file would look like:-
-```
-        noise:
-        |   - header.Date
-        |   - header.Etag
-        |   - body.accessToken
-```
-
-Now, let's run the keploy in test mode again:-
-
-![Testrun](./img/test-pass.png)
-
-*Voila!! Our testcases has passed 🌟*
+_Voila!! Our testcases has passed 🌟_

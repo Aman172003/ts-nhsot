@@ -1,0 +1,62 @@
+version: api.keploy.io/v1beta1
+kind: Http
+name: test-7
+spec:
+    metadata: {}
+    req:
+        method: DELETE
+        proto_major: 1
+        proto_minor: 1
+        url: http://localhost:3000/todos/20
+        header:
+            Accept: '*/*'
+            Accept-Encoding: gzip, deflate, br
+            Cache-Control: no-cache
+            Connection: keep-alive
+            Content-Length: "49"
+            Content-Type: application/json
+            Host: localhost:3000
+            Postman-Token: a44ed8ab-b118-43bc-b1c6-4e2170fc4ec6
+            User-Agent: PostmanRuntime/7.40.0
+        body: |-
+            {
+                "name": "Soccer",
+                "isCompleted": true
+            }
+        timestamp: 2024-07-20T19:32:40.502982215Z
+    resp:
+        status_code: 200
+        header:
+            Access-Control-Allow-Origin: '*'
+            Connection: keep-alive
+            Content-Length: "9"
+            Content-Type: application/json; charset=utf-8
+            Date: Sat, 20 Jul 2024 19:32:40 GMT
+            Etag: W/"9-yCsLoUbVLWZbDMBqa9+3alohzr0"
+            Keep-Alive: timeout=5
+            X-Powered-By: Express
+        body: '{"id":20}'
+        status_message: OK
+        proto_major: 0
+        proto_minor: 0
+        timestamp: 2024-07-20T19:32:42.816330428Z
+    objects: []
+    assertions:
+        noise:
+            header.Date: []
+    created: 1721503962
+curl: |-
+    curl --request DELETE \
+      --url http://localhost:3000/todos/20 \
+      --header 'Content-Type: application/json' \
+      --header 'Cache-Control: no-cache' \
+      --header 'Postman-Token: a44ed8ab-b118-43bc-b1c6-4e2170fc4ec6' \
+      --header 'User-Agent: PostmanRuntime/7.40.0' \
+      --header 'Accept: */*' \
+      --header 'Connection: keep-alive' \
+      --header 'Accept-Encoding: gzip, deflate, br' \
+      --header 'Host: localhost:3000' \
+      --data '{
+        "name": "Soccer",
+        "isCompleted": true
+    }'

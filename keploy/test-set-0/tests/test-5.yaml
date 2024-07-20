@@ -1,0 +1,64 @@
+version: api.keploy.io/v1beta1
+kind: Http
+name: test-5
+spec:
+    metadata: {}
+    req:
+        method: POST
+        proto_major: 1
+        proto_minor: 1
+        url: http://localhost:3000/todos
+        header:
+            Accept: '*/*'
+            Accept-Encoding: gzip, deflate, br
+            Cache-Control: no-cache
+            Connection: keep-alive
+            Content-Length: "105"
+            Content-Type: application/json
+            Host: localhost:3000
+            Postman-Token: 920e308a-4bfb-4103-9f3a-34dc5ca82e2b
+            User-Agent: PostmanRuntime/7.40.0
+        body: |-
+            {
+                "name": "Cricket",
+                "isCompleted": false,
+                "userId": "dfd2b1c4-21ee-442e-99f7-f8ef3e12aece"
+            }
+        timestamp: 2024-07-20T19:30:17.051051734Z
+    resp:
+        status_code: 201
+        header:
+            Access-Control-Allow-Origin: '*'
+            Connection: keep-alive
+            Content-Length: "88"
+            Content-Type: application/json; charset=utf-8
+            Date: Sat, 20 Jul 2024 19:30:17 GMT
+            Etag: W/"58-U1bXYNMd3LKQ/+FG1Gx3GwPXt+s"
+            Keep-Alive: timeout=5
+            X-Powered-By: Express
+        body: '{"is_completed":false,"name":"Cricket","user_id":"dfd2b1c4-21ee-442e-99f7-f8ef3e12aece"}'
+        status_message: Created
+        proto_major: 0
+        proto_minor: 0
+        timestamp: 2024-07-20T19:30:19.399437417Z
+    objects: []
+    assertions:
+        noise:
+            header.Date: []
+    created: 1721503819
+curl: |-
+    curl --request POST \
+      --url http://localhost:3000/todos \
+      --header 'Postman-Token: 920e308a-4bfb-4103-9f3a-34dc5ca82e2b' \
+      --header 'User-Agent: PostmanRuntime/7.40.0' \
+      --header 'Content-Type: application/json' \
+      --header 'Accept-Encoding: gzip, deflate, br' \
+      --header 'Accept: */*' \
+      --header 'Connection: keep-alive' \
+      --header 'Cache-Control: no-cache' \
+      --header 'Host: localhost:3000' \
+      --data '{
+        "name": "Cricket",
+        "isCompleted": false,
+        "userId": "dfd2b1c4-21ee-442e-99f7-f8ef3e12aece"
+    }'

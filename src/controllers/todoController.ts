@@ -4,14 +4,14 @@ import axios from "axios";
 
 dotenv.config();
 
-const url = process.env.NHOST_BACKENDURL;
+const url = process.env.GRAPHQL_ENDPOINT;
 if (!url) {
-  throw new Error("NHOST_BACKENDURL is not defined in .env");
+  throw new Error("GRAPHQL_ENDPOINT is not defined in .env");
 }
 
 const headers = {
   "content-type": "application/json",
-  "x-hasura-admin-secret": process.env.NHOST_SECRET || "",
+  "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET || "",
 };
 
 export const getTodos = async (req: Request, res: Response) => {
@@ -44,6 +44,7 @@ export const insertTodo = async (req: Request, res: Response) => {
         is_completed
         name
         user_id
+        id
       }
     }
   `;

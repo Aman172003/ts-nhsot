@@ -1,29 +1,25 @@
 import { Request, Response } from "express";
 import dotenv from "dotenv";
 import axios from "axios";
-import bcrypt from "bcrypt";
 
 dotenv.config();
 
-const url = process.env.NHOST_BACKENDURL;
+const url = process.env.GRAPHQL_ENDPOINT;
 if (!url) {
-  throw new Error("NHOST_BACKENDURL is not defined in .env");
+  throw new Error("GRAPHQL_ENDPOINT is not defined in .env");
 }
 
 const headers = {
   "content-type": "application/json",
-  "x-hasura-admin-secret": process.env.NHOST_SECRET || "",
+  "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET || "",
 };
 
 export const createUser = async (req: Request, res: Response) => {
   const { displayName, email, password, locale } = req.body;
 
-  const salt = 10;
-  const passwordHash = await bcrypt.hash(password, salt);
-
   const user = {
     email,
-    passwordHash,
+    passwordHash: password,
     locale,
     displayName,
   };
