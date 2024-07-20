@@ -8,6 +8,7 @@ const url = process.env.NHOST_BACKENDURL;
 if (!url) {
   throw new Error("NHOST_BACKENDURL is not defined in .env");
 }
+
 const headers = {
   "content-type": "application/json",
   "x-hasura-admin-secret": process.env.NHOST_SECRET || "",
@@ -92,7 +93,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   const mutation = `
     mutation {
-      deleteUser(id: "${id}") {  
+      deleteUser(id: "${id}") {
           id
       }
     }

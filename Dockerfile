@@ -1,5 +1,5 @@
 # Use an official Node runtime as the base image
-FROM node:14
+FROM node:18
 
 # Install ca-certificates and clean up
 RUN apt-get update && \
