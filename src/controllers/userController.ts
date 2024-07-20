@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import dotenv from "dotenv";
 import axios from "axios";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
@@ -15,35 +16,28 @@ const headers = {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const user = req.body;
+  const { displayName, email, password, locale } = req.body;
+
+  const salt = 10;
+  const passwordHash = await bcrypt.hash(password, salt);
+
+  const user = {
+    email,
+    passwordHash,
+    locale,
+    displayName,
+  };
+
   const query = `
     mutation insertUser($object: users_insert_input!) {
       insertUser(object: $object) {
-        activeMfaType
-        avatarUrl
         createdAt
-        currentChallenge
-        defaultRole
-        disabled
         displayName
         email
         emailVerified
         id
-        isAnonymous
-        lastSeen
         locale
-        metadata
-        newEmail
-        otpHash
-        otpHashExpiresAt
-        otpMethodLastUsed
         passwordHash
-        phoneNumber
-        phoneNumberVerified
-        ticket
-        ticketExpiresAt
-        totpSecret
-        updatedAt
       }
     }
   `;
