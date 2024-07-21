@@ -117,6 +117,12 @@ Make API Calls using Hoppscotch, Postman or cURL command. Keploy will capture th
 
 Since we have to setup our app using docker(make sure your docker is running)
 
+## Create a custom network for Keploy since we are using the Docker
+
+```bash
+docker network create keploy-network
+```
+
 ## Capture the testcases
 
 We will run the keploy in record mode with docker-compose to start our application:-
