@@ -1,10 +1,10 @@
-import express from "express";
+import express, { Application } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import todoRoutes from "./routes/todoRoutes";
 import userRoutes from "./routes/userRoutes";
 
-const app = express();
+const app: Application = express();
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -19,5 +19,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is live at Port: ${PORT}🚀`);
 });
-
-

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import dotenv from "dotenv";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 dotenv.config();
 
@@ -14,8 +14,20 @@ const headers = {
   "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET || "",
 };
 
+interface User {
+  displayName: string;
+  email: string;
+  password: string;
+  locale: string;
+}
+
+interface GraphQLResponse<T> {
+  data: T;
+  errors?: { message: string }[];
+}
+
 export const createUser = async (req: Request, res: Response) => {
-  const { displayName, email, password, locale } = req.body;
+  const { displayName, email, password, locale }: User = req.body;
 
   const user = {
     email,
@@ -39,7 +51,8 @@ export const createUser = async (req: Request, res: Response) => {
   };
 
   try {
-    const response = await axios.post(url, { query, variables }, { headers });
+    const response: AxiosResponse<GraphQLResponse<{ insertUser: User }>> =
+      await axios.post(url, { query, variables }, { headers });
 
     if (response.data.errors) {
       return res.status(400).json({ errors: response.data.errors });
@@ -57,7 +70,6 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-// Get All Users
 export const getAllUsers = async (req: Request, res: Response) => {
   const query = `
     query {
@@ -69,7 +81,11 @@ export const getAllUsers = async (req: Request, res: Response) => {
     }
   `;
   try {
-    const response = await axios.post(url, { query }, { headers });
+    const response: AxiosResponse<GraphQLResponse<{ users: User[] }>> =
+      await axios.post(url, { query }, { headers });
+    if (response.data.errors) {
+      return res.status(400).json({ errors: response.data.errors });
+    }
     res.status(200).json(response.data.data.users);
   } catch (error) {
     console.error("Error performing GraphQL query:", error);
@@ -77,18 +93,19 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-// Delete User
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   const mutation = `
     mutation {
       deleteUser(id: "${id}") {
-          id
+        id
       }
     }
   `;
   try {
-    const response = await axios.post(url, { query: mutation }, { headers });
+    const response: AxiosResponse<
+      GraphQLResponse<{ deleteUser: { id: string } }>
+    > = await axios.post(url, { query: mutation }, { headers });
 
     if (response.data.errors) {
       throw new Error(response.data.errors[0].message);
