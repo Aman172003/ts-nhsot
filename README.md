@@ -5,7 +5,7 @@ A sample App using Typescript and using nhost.io as Backend as a service
 ## Setup application
 
 Clone the repository and move to ts-nhost folder
-Create a .env file which should contain HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT
+Create a .env file which should contain HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT(as mentioned in ts-nhost/sample.env)
 
 ### Below are the steps to get HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT
 
@@ -115,7 +115,7 @@ Make API Calls using Hoppscotch, Postman or cURL command. Keploy will capture th
 
 # Running the app using docker
 
-Since we have to setup our app using docker
+Since we have to setup our app using docker(make sure your docker is running)
 
 ## Capture the testcases
 
@@ -135,7 +135,7 @@ Make API Calls using [Hoppscotch](https://hoppscotch.io), [Postman](https://post
 ## Running the testcases
 
 ```bash
-keploy test -c 'sudo docker-compose up'  --containerName "ts-nhost" --delay 10
+keploy test -c 'sudo docker-compose up' --containerName "ts-nhost" --delay 10
 ```
 
 _Voila!! Our testcases has passed 🌟_
