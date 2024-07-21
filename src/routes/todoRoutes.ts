@@ -4,10 +4,12 @@ import {
   insertTodo,
   updateTodo,
   deleteTodo,
+  createTable,
 } from "../controllers/todoController";
 
 const router = Router();
 
+router.post("/createtable", createTable);
 router.get("/", getTodos);
 router.post("/", insertTodo);
 router.put("/:id", updateTodo);

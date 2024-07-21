@@ -8,10 +8,53 @@ const url = process.env.GRAPHQL_ENDPOINT;
 if (!url) {
   throw new Error("GRAPHQL_ENDPOINT is not defined in .env");
 }
+const queryURL = url.replace("/graphql", "/query");
 
 const headers = {
   "content-type": "application/json",
   "x-hasura-admin-secret": process.env.HASURA_ADMIN_SECRET || "",
+};
+
+export const createTable = async (req: Request, res: Response) => {
+  const createTableQuery = {
+    type: "run_sql",
+    args: {
+      source: "default",
+      sql: `
+        CREATE TABLE public.todos (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          is_completed BOOL NOT NULL
+        );
+      `,
+    },
+  };
+
+  const trackTableQuery = {
+    type: "track_table",
+    args: {
+      schema: "public",
+      name: "todos",
+    },
+  };
+
+  try {
+    const responseTable = await axios.post(queryURL, createTableQuery, {
+      headers,
+    });
+    console.log("Table created successfully:", responseTable.data);
+    const responseTrack = await axios.post(queryURL, trackTableQuery, {
+      headers,
+    });
+    console.log("Table created successfully:", responseTrack.data);
+    res.status(200).json({
+      message: "Table created and tracked successfully",
+      data: responseTable.data,
+    });
+  } catch (error) {
+    console.error("Error creating table:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 export const getTodos = async (req: Request, res: Response) => {
@@ -21,7 +64,6 @@ export const getTodos = async (req: Request, res: Response) => {
         id
         name
         is_completed
-        user_id
       }
     }
   `;
@@ -35,11 +77,11 @@ export const getTodos = async (req: Request, res: Response) => {
 };
 
 export const insertTodo = async (req: Request, res: Response) => {
-  const { name, isCompleted, userId } = req.body;
+  const { name, isCompleted } = req.body;
 
   const mutation = `
     mutation {
-      insert_todos_one(object: { name: "${name}", is_completed: ${isCompleted}, user_id: "${userId}" }) {
+      insert_todos_one(object: { name: "${name}", is_completed: ${isCompleted} }) {
         id
       }
     }
@@ -74,7 +116,7 @@ export const updateTodo = async (req: Request, res: Response) => {
       throw new Error(response.data.errors[0].message);
     }
     res.json({
-      message: "Successfully inserted",
+      message: "Successfully updated",
       id: response.data.data.update_todos_by_pk.id,
     });
   } catch (error: unknown) {

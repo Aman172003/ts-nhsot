@@ -10,7 +10,6 @@ curl -X GET \  -H "Content-Type: application/json" \
 --------------------------------------------------------------------------------------------------------
 
 -Create a new user
---replace <userId> with any one user id from users list
 
 curl -X POST \
   -H "Content-Type: application/json" \
@@ -69,7 +68,7 @@ curl -X PUT \
 --------------------------------------------------------------------------------------------------------
 
 -Delete the todo activity
---replace <id> with any id you want to delete
+--replace <id> with any id in todo list you want to delete
 
 curl -X DELETE \
   -H "Content-Type: application/json" \
