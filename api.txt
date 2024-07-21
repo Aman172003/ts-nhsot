@@ -2,19 +2,12 @@ Copy paste the curl commands each at a time and run it on terminal/cmd
 
 --------------------------------------------------------------------------------------------------------
 
--Get all users
-
-curl -X GET \  -H "Content-Type: application/json" \
-  http://localhost:3000/users
-
---------------------------------------------------------------------------------------------------------
-
 -Create a new user
 
 curl -X POST \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "arpit@gmail.com",
+    "email": "arpit@gmail.com",
     "password": "123456789",
     "locale": "en",
     "displayName": "Arpit"
@@ -22,6 +15,15 @@ curl -X POST \
   http://localhost:3000/users
 
 --------------------------------------------------------------------------------------------------------
+
+-Get all users
+
+curl -X GET \  -H "Content-Type: application/json" \
+  http://localhost:3000/users
+
+--------------------------------------------------------------------------------------------------------
+
+
 
 -Delete a user
 --replace <id> with id of any users from users list
@@ -32,6 +34,25 @@ curl -X DELETE \
 
 --------------------------------------------------------------------------------------------------------
 
+-Create a todo table
+
+curl -X POST \  -H "Content-Type: application/json" \
+  http://localhost:3000/todos/createtable
+
+--------------------------------------------------------------------------------------------------------
+
+-Insert a todo activity into todo table
+
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Study",
+    "isCompleted": false
+  }' \
+  http://localhost:3000/todos
+
+--------------------------------------------------------------------------------------------------------
+
 -Get all todo list
 
 curl -X GET \  -H "Content-Type: application/json" \
@@ -39,22 +60,8 @@ curl -X GET \  -H "Content-Type: application/json" \
 
 --------------------------------------------------------------------------------------------------------
 
--Create a new todo
---replace <userId> with any one user id from users list
-
-curl -X POST \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Study",
-    "isCompleted": false,
-    "userId": "<userId>"
-  }' \
-  http://localhost:3000/todos
-
---------------------------------------------------------------------------------------------------------
-
 -Update the todo activity
---replace <id> with any one id from todo list
+--replace <id> with the id of the todo activity you want to update
 --replace <name> with any name you want to change to
 
 curl -X PUT \
