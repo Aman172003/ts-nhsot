@@ -4,8 +4,8 @@ A sample App using Typescript and using nhost.io as Backend as a service
 
 ## Setup application
 
-Clone the repository and move to ts-nhost folder
-Create a .env file which should contain HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT(as mentioned in ts-nhost/sample.env)
+1. Clone the repository and move to ts-nhost folder
+2. Create a .env file which should contain HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT(as mentioned in ts-nhost/sample.env)
 
 ### Below are the steps to get HASURA_ADMIN_SECRET and GRAPHQL_ENDPOINT
 
